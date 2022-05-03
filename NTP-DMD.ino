@@ -1,3 +1,15 @@
+/* P10 MonoColor Hardware Connections:
+            ------IDC16 IN------
+  CS/GPIO15/D8  |1|   |2|  D0/GPIO16
+            Gnd |3|   |4|  D6/GPIO12/MISO
+            Gnd |5|   |6|  X
+            Gnd |7|   |8|  D5/GPIO14/CLK
+            Gnd |9|   |10| D3/GPIO0
+            Gnd |11|  |12| D7/GPIO13/MOSI
+            Gnd |13|  |14| X
+            Gnd |15|  |16| X
+            --------------------  */
+
 #include <NTPClient.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
@@ -81,8 +93,8 @@ void loop() {
   dmd.drawText(0, 0, String(saat0));
   dmd.drawText(19, 0, String(dakika0));
 
-  dmd.setFont(angka6x13);
-  dmd.drawText(19, 0, "anky");
+  dmd.setFont(SystemFont5x7);
+  dmd.drawText(33, 0, "anky");
   
   }
 }
