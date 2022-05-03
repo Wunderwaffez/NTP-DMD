@@ -20,8 +20,9 @@
 #include <DMDESP.h>
 #include <fonts/angka6x13.h>
 #include <fonts/SystemFont5x7.h>
+#include <fonts/ElektronMart5x6.h>
 
-DMDESP dmd(2,1);
+DMDESP dmd(2, 1);
 
 const char *ssid     = "bugs";
 const char *password = "04546412889";
@@ -34,7 +35,7 @@ NTPClient ntp(ntpUDP, "europe.pool.ntp.org", 10800, 300000);
 void setup() {
 
   last_second = millis();
-  
+
   WiFi.mode(WIFI_STA);
   WiFi.setAutoReconnect(true);
   ArduinoOTA.setHostname("NTP");
@@ -44,57 +45,63 @@ void setup() {
   WiFi.begin(ssid, password);
   ArduinoOTA.begin();
   ntp.begin();
-  
+
   dmd.setBrightness(1);
   dmd.setFont(SystemFont5x7);
 
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     ESP.restart();
   }
-    Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP());
 
 }
 
 void loop() {
   dmd.loop();
-  
+
   ArduinoOTA.handle();
 
   dmd.setFont(SystemFont5x7);
-  
+
   if (millis() / 1000 % 2 == 0)
   {
-    dmd.drawChar(14, 5, ':');
+    dmd.drawChar(14, 4, ':');
   }
   else
   {
-    dmd.drawChar(14, 5, ' ');
+    dmd.drawChar(14, 4, ' ');
   }
 
-  if (millis() - last_second > 1000){
-  last_second = millis();   
-  ntp.update();
-  
-  int saat = ntp.getHours();
-  int dakika = ntp.getMinutes();
-  String saat0;
-  String dakika0;
-  
-  dakika0 = String(dakika);
-    if (dakika < 10) {dakika0 = '0' + dakika0;}
+  if (millis() - last_second > 1000) {
+    last_second = millis();
+    ntp.update();
+
+    int saat = ntp.getHours();
+    int dakika = ntp.getMinutes();
+    String saat0;
+    String dakika0;
+
+    dakika0 = String(dakika);
+    if (dakika < 10) {
+      dakika0 = '0' + dakika0;
+    }
     else dakika0 = dakika0;
 
     saat0 = String (saat);
-    if (saat < 10) {saat0 = ("0") + (saat0);}
+    if (saat < 10) {
+      saat0 = ("0") + (saat0);
+    }
     else {saat0 = saat0;}
 
-  dmd.setFont(angka6x13);
+    dmd.setFont(angka6x13);
 
-  dmd.drawText(0, 0, String(saat0));
-  dmd.drawText(19, 0, String(dakika0));
+    dmd.drawText(0, 0, String(saat0));
+    dmd.drawText(19, 0, String(dakika0));
 
-  dmd.setFont(SystemFont5x7);
-  dmd.drawText(33, 0, "anky");
-  
+    dmd.setFont(ElektronMart5x6);
+
+    dmd.drawText(33, 0, "hazar");
+    dmd.drawText(33, 7, "turk");
+
   }
 }
