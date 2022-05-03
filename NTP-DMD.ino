@@ -9,7 +9,7 @@
 #include <fonts/angka6x13.h>
 #include <fonts/SystemFont5x7.h>
 
-DMDESP dmd(1,1);
+DMDESP dmd(2,1);
 
 const char *ssid     = "bugs";
 const char *password = "04546412889";
@@ -78,8 +78,11 @@ void loop() {
 
   dmd.setFont(angka6x13);
 
-  dmd.drawText(0, 1, String(saat0));
-  dmd.drawText(19, 1, String(dakika0));
+  dmd.drawText(0, 0, String(saat0));
+  dmd.drawText(19, 0, String(dakika0));
+
+  dmd.setFont(angka6x13);
+  dmd.drawText(19, 0, "anky");
   
   }
 }
