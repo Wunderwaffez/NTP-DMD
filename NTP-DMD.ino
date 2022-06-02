@@ -16,10 +16,9 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
-#include "Seeed_BME280.h"
-#include <Wire.h>
+#include "DHT.h"
+#include <DS18B20.h>
 
-BME280 bme280;
 
 #include <SPI.h>
 #include <DMDESP.h>
@@ -27,22 +26,27 @@ BME280 bme280;
 #include <fonts/SystemFont5x7.h>
 #include <fonts/ElektronMart5x6.h>
 
+#define DHTPIN 2
+#define DHTTYPE DHT11
+
 DMDESP dmd(2, 1);
 
 const char *ssid     = "bugs";
 const char *password = "04546412889";
 
+String humid;
+String sicaklik;
+String temp;
+
 int last_second = 0;
 int last_second2 = 0;
 
-String sicaklik;
-String nem;
-int humid;
-
 WiFiUDP ntpUDP;
 NTPClient ntp(ntpUDP, "europe.pool.ntp.org", 10800, 300000);
+DHT dht(DHTPIN, DHTTYPE);
+DS18B20 ds(4);
 
-ADC_MODE(ADC_VCC);
+uint8_t address[] = {40, 250, 31, 218, 4, 0, 0, 52};
 
 void setup() {
 
@@ -57,14 +61,9 @@ void setup() {
   WiFi.begin(ssid, password);
   ArduinoOTA.begin();
   ntp.begin();
-  bme280.init();
+  dht.begin();
 
-  float temperature = bme280.getTemperature();
-  sicaklik = String(temperature);
-
-  humid = bme280.getHumidity();
-  if (humid = 100) {humid = 99;};
-  nem = ("%") + String(humid);
+  ds.select(address);
 
   dmd.setBrightness(1);
   dmd.setFont(SystemFont5x7);
@@ -73,6 +72,12 @@ void setup() {
     ESP.restart();
   }
   Serial.println(WiFi.localIP());
+
+  int h = dht.readHumidity();
+  humid = "%" + String(h);
+
+  float t = ds.getTempC();
+  temp = String(t, 3);
 
 }
 
@@ -92,16 +97,15 @@ void loop() {
     dmd.drawChar(14, 4, ' ');
   }
 
-  if (millis() - last_second2 > 30000) {
+  if (millis() - last_second2 > 300000) {
 
     last_second2 = millis();
 
-    float temperature = bme280.getTemperature();
-    sicaklik = String(temperature);
+    int h = dht.readHumidity();
+    humid = "%" + String(h);
 
-    int humid = bme280.getHumidity();
-    if (humid = 100) {humid = 99;};
-    nem = ("%") + String(humid);
+    float t = ds.getTempC();
+    temp = String(t, 3);
 
   }
 
@@ -137,8 +141,8 @@ void loop() {
 
     dmd.drawLine(33, 0, 33, 16);
 
-    dmd.drawText(35, 0, sicaklik, 0, 4);
-    dmd.drawText(35, 9, nem);
+    dmd.drawText(35, 0, temp, 0, 4);
+    dmd.drawText(35, 9, humid);
     dmd.drawText(57, 0, "C");
 
 
