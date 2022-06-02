@@ -16,6 +16,11 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
+#include "Seeed_BME280.h"
+#include <Wire.h>
+
+BME280 bme280;
+
 #include <SPI.h>
 #include <DMDESP.h>
 #include <fonts/angka6x13.h>
@@ -28,9 +33,16 @@ const char *ssid     = "bugs";
 const char *password = "04546412889";
 
 int last_second = 0;
+int last_second2 = 0;
+
+String sicaklik;
+String nem;
+int humid;
 
 WiFiUDP ntpUDP;
 NTPClient ntp(ntpUDP, "europe.pool.ntp.org", 10800, 300000);
+
+ADC_MODE(ADC_VCC);
 
 void setup() {
 
@@ -45,6 +57,14 @@ void setup() {
   WiFi.begin(ssid, password);
   ArduinoOTA.begin();
   ntp.begin();
+  bme280.init();
+
+  float temperature = bme280.getTemperature();
+  sicaklik = String(temperature);
+
+  humid = bme280.getHumidity();
+  if (humid = 100) {humid = 99;};
+  nem = ("%") + String(humid);
 
   dmd.setBrightness(1);
   dmd.setFont(SystemFont5x7);
@@ -72,6 +92,19 @@ void loop() {
     dmd.drawChar(14, 4, ' ');
   }
 
+  if (millis() - last_second2 > 30000) {
+
+    last_second2 = millis();
+
+    float temperature = bme280.getTemperature();
+    sicaklik = String(temperature);
+
+    int humid = bme280.getHumidity();
+    if (humid = 100) {humid = 99;};
+    nem = ("%") + String(humid);
+
+  }
+
   if (millis() - last_second > 1000) {
     last_second = millis();
     ntp.update();
@@ -91,7 +124,9 @@ void loop() {
     if (saat < 10) {
       saat0 = ("0") + (saat0);
     }
-    else {saat0 = saat0;}
+    else {
+      saat0 = saat0;
+    }
 
     dmd.setFont(angka6x13);
 
@@ -100,8 +135,12 @@ void loop() {
 
     dmd.setFont(ElektronMart5x6);
 
-    dmd.drawText(33, 0, "hazar");
-    dmd.drawText(33, 7, "turk");
+    dmd.drawLine(33, 0, 33, 16);
+
+    dmd.drawText(35, 0, sicaklik, 0, 4);
+    dmd.drawText(35, 9, nem);
+    dmd.drawText(57, 0, "C");
+
 
   }
 }
