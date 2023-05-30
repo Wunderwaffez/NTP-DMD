@@ -18,6 +18,8 @@
 
 #include "DHT.h"
 #include <DS18B20.h>
+// DS18B20_RT LIBRARY
+#include <OneWire.h>
 
 
 #include <SPI.h>
@@ -28,8 +30,7 @@
 
 #define DHTPIN 2
 #define DHTTYPE DHT11
-
-DMDESP dmd(2, 1);
+#define ONE_WIRE_BUS 4
 
 const char *ssid     = "bugs";
 const char *password = "04546412889";
@@ -44,7 +45,10 @@ int last_second2 = 0;
 WiFiUDP ntpUDP;
 NTPClient ntp(ntpUDP, "europe.pool.ntp.org", 10800, 300000);
 DHT dht(DHTPIN, DHTTYPE);
-DS18B20 ds(4);
+OneWire oneWire(ONE_WIRE_BUS);
+DS18B20 ds(&oneWire);
+DMDESP dmd(2, 1);
+
 
 uint8_t address[] = {40, 250, 31, 218, 4, 0, 0, 52};
 
@@ -62,8 +66,6 @@ void setup() {
   ArduinoOTA.begin();
   ntp.begin();
   dht.begin();
-
-  ds.select(address);
 
   dmd.setBrightness(1);
   dmd.setFont(SystemFont5x7);
@@ -102,6 +104,8 @@ void loop() {
     last_second2 = millis();
 
     dmd.clear();
+
+    ds.requestTemperatures();
 
     int h = dht.readHumidity();
     humid = "%" + String(h);
