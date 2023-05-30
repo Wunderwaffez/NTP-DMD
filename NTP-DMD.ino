@@ -101,6 +101,8 @@ void loop() {
 
     last_second2 = millis();
 
+    dmd.clear();
+
     int h = dht.readHumidity();
     humid = "%" + String(h);
 
@@ -139,11 +141,55 @@ void loop() {
 
     dmd.setFont(ElektronMart5x6);
 
-    dmd.drawLine(33, 0, 33, 16);
+    //dmd.drawLine(33, 0, 33, 16);
+    
+    dmd.setPixel(56,0,1);
+    dmd.setPixel(56,1,1);
+    dmd.setPixel(56,2,1);
+
+    dmd.setPixel(57,2,1);
+    dmd.setPixel(57,0,1);
+    
+    dmd.setPixel(58,0,1);
+    dmd.setPixel(58,1,1);
+    dmd.setPixel(58,2,1);
+
+    
+/* -----------------------------
+ 
+    dmd.setPixel(53,9,1);
+    
+    dmd.setPixel(52,10,1);
+    dmd.setPixel(53,10,1);
+    dmd.setPixel(54,10,1);
+    
+    dmd.setPixel(52,11,1);
+    dmd.setPixel(53,11,1);
+    dmd.setPixel(54,11,1);
+    
+    dmd.setPixel(52,12,1);
+    dmd.setPixel(53,12,1);
+    dmd.setPixel(54,12,1);
+    
+    dmd.setPixel(52,13,1);
+    dmd.setPixel(53,13,1);
+    dmd.setPixel(54,13,1);
+    
+    dmd.setPixel(52,14,1);
+    dmd.setPixel(53,14,1);
+    dmd.setPixel(54,14,1);
+
+    dmd.setPixel(51,12,1);
+    dmd.setPixel(55,12,1);
+    
+    dmd.setPixel(51,13,1);
+    dmd.setPixel(55,13,1);
+
+*/
 
     dmd.drawText(35, 0, temp, 0, 4);
-    dmd.drawText(35, 9, humid);
-    dmd.drawText(57, 0, "C");
+    dmd.drawText(35, 8, humid);
+    dmd.drawText(60, 0, "C");
 
 
   }
