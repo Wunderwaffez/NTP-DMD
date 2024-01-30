@@ -34,8 +34,8 @@
 #define DHTTYPE DHT11
 #define ONE_WIRE_BUS 4
 
-const char *ssid     = "bugs";
-const char *password = "04546412889";
+const char *ssid     = "wifi";
+const char *password = "password";
 
 String humid;
 String sicaklik;
